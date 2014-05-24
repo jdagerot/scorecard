@@ -1,0 +1,81 @@
+FORMAT: 1A
+HOST: http://www.google.com
+
+# scorekepper
+Scorekeeper API is a *fast scorecard creator* service.
+
+# Group Notes
+Notes related resources of the **Scorekeeper API**
+
+## Score Collection [/scores/{scoreID}]
+### Get a scorecard [GET]
++ Response 200 (application/json)
+
+        {
+            "scorecard": "After work fun games 10 July 2002",
+            "results": {
+                "Gun shooting": {
+                    "unit": "points",
+                    "competitors": {
+                        "Adam": 5,
+                        "Bea": 5,
+                        "Cecilia": 5
+                    }
+                },
+                "Fishing": {
+                    "unit": "gram",
+                    "competitors": {
+                        "Adam": 200,
+                        "Bea": 500,
+                        "Cecilia": 510
+                    }
+                }
+            }
+        }
+
+### Create a scorecard [POST]
++ Request (application/json)
+
+        {
+            "title": "competition_name",
+            "competitors": {
+                "team1": [
+                    "Adam",
+                    "Bea",
+                    "Cecilia"
+                ],
+                "team2": [
+                    "Diana",
+                    "Eric",
+                    "France"
+                ]
+            },
+            "races": [
+                "Fishing",
+                "Gun shooting"
+            ]
+        }
+
++ Response 201 (application/json)
+
+        { "id": 3, "title": "Buy cheese and bread for breakfast." }
+
+## Note [/notes/{id}]
+A single Note object with all its details
+
++ Parameters
+    + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
+
+### Retrieve a Note [GET]
++ Response 200 (application/json)
+
+    + Header
+
+            X-My-Header: The Value
+
+    + Body
+
+            { "id": 2, "title": "Pick-up posters from post-office" }
+
+### Remove a Note [DELETE]
++ Response 204
