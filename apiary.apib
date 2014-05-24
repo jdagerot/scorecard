@@ -1,81 +1,95 @@
 FORMAT: 1A
-HOST: http://www.google.com
+HOST: http: //www.google.com
 
 # scorekepper
-Scorekeeper API is a *fast scorecard creator* service.
+Scorekeeper API is a * fast scorecard creator * service.
 
 # Group Notes
-Notes related resources of the **Scorekeeper API**
+Notes related resources of the * * Scorekeeper API * *
 
-## Score Collection [/scores/{scoreID}]
-### Get a scorecard [GET]
-+ Response 200 (application/json)
+# # Score Collection[/scores/ {
+    scoreID
+}]
+# # # Get a scorecard[GET] + Response 200(application / json)
 
-        {
-            "scorecard": "After work fun games 10 July 2002",
+{
+    "scorecard": "After work Fun Games 10 July 2002",
+    "races": {
+        "Gun shooting": {
+            "unit": "points",
             "results": {
-                "Gun shooting": {
-                    "unit": "points",
-                    "competitors": {
-                        "Adam": 5,
-                        "Bea": 5,
-                        "Cecilia": 5
-                    }
+                "Team1": {
+                    "Adam": 5,
+                    "Bea": 5,
+                    "Cecilia": 5
                 },
-                "Fishing": {
-                    "unit": "gram",
-                    "competitors": {
-                        "Adam": 200,
-                        "Bea": 500,
-                        "Cecilia": 510
-                    }
+                "Team2": {
+                    "Diana": 7,
+                    "Eric": 8,
+                    "France": 9
+                }
+            }
+        },
+        "Fishing": {
+            "unit": "gram",
+            "results": {
+                "team1": {
+                    "Adam": 200,
+                    "Bea": 500,
+                    "Cecilia": 510
                 }
             }
         }
+    }
+}
 
-### Create a scorecard [POST]
-+ Request (application/json)
+# # # Create a scorecard[POST] + Request(application / json)
 
-        {
-            "title": "competition_name",
-            "competitors": {
-                "team1": [
-                    "Adam",
-                    "Bea",
-                    "Cecilia"
-                ],
-                "team2": [
-                    "Diana",
-                    "Eric",
-                    "France"
-                ]
-            },
-            "races": [
-                "Fishing",
-                "Gun shooting"
-            ]
-        }
+{
+    "title": "After work Fun Games 10 July 2002",
+    "competitors": {
+        "team1": [
+            "Adam",
+            "Bea",
+            "Cecilia"
+        ],
+        "team2": [
+            "Diana",
+            "Eric",
+            "France"
+        ]
+    },
+    "races": [
+        "Fishing",
+        "Gun shooting"
+    ]
+}
 
-+ Response 201 (application/json)
++ Response 201(application / json)
 
-        { "id": 3, "title": "Buy cheese and bread for breakfast." }
+{
+    "id": 3,
+    "title": "Buy cheese and bread for breakfast."
+}
 
-## Note [/notes/{id}]
+# # Note[/notes/ {
+    id
+}]
 A single Note object with all its details
 
-+ Parameters
-    + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
++ Parameters + id(required, number, `1`)...Numeric` id` of the Note to perform action with.Has example value.
 
-### Retrieve a Note [GET]
-+ Response 200 (application/json)
+# # # Retrieve a Note[GET] + Response 200(application / json)
 
-    + Header
++ Header
 
-            X-My-Header: The Value
+X - My - Header: The Value
 
-    + Body
++ Body
 
-            { "id": 2, "title": "Pick-up posters from post-office" }
+{
+    "id": 2,
+    "title": "Pick-up posters from post-office"
+}
 
-### Remove a Note [DELETE]
-+ Response 204
+# # # Remove a Note[DELETE] + Response 204
