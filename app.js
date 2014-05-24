@@ -10,7 +10,9 @@ var http = require('http');
 var path = require('path');
 
 var app = express();
-
+var storage = require('node-persist');
+var routes = new Routes(app, storage);
+storage.initSync();
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -30,6 +32,8 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+app.get('/setup', routes.setup)
+app.get('/setup/:scorecardID', routes.setup)
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
