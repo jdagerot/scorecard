@@ -1,7 +1,67 @@
 extends layout
 
 block content
-  h1= title
-  p #{title}
+  .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+      .container
+        .navbar-header
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href='#') Scorekeeper
+        .collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li.active
+              a(href='#') Results
+            li
+              a(href='#about') Inställning
 
-  p ID Should be #{scorecardID}
+    .container
+      .starter-template
+        h1= title
+        p.lead Ställ in din tävling här
+        p ID Should be #{scorecardID}
+        div
+            form(action="/setup/" + val, method="POST")
+                h4 Speldetaljer
+                div
+                    label(for="competionName") Tävlingsnamn
+                    input(name="competionName")
+                h4 Deltagare
+                    table
+                        tr
+                            th
+                            th Namn:
+                            th Lag:
+                            th Kön
+                        each val in ["User1", "User2", "User3", "User4", "User5"]
+                            tr
+                                td=val
+                                td
+                                    input(name="username_" + val)
+                                td 
+                                    input(name="teamName_" + val)
+                                td
+                                    label(for="sex_" + val) M
+                                        input(type="radio", name="sex_" + val, value="M")
+                                    &nbsp; &nbsp; &nbsp;
+                                    label(for="sex_" + val) F
+                                        input(type="radio", name="sex_" + val, value="F")
+                h4 Grenar
+                    table
+                        tr
+                            th
+                            th Gren:
+                            th Kommentar:
+                            th Poängenhet
+                        each val in ["Gren 1", "Gren 2", "Gren 3", "Gren 4", "Gren 5"]
+                            tr
+                                td=val
+                                td
+                                    input(name="branchName_" + val, placeholder="Grenens namn")
+                                td 
+                                    input(name="branchComment_" + val, placeholder="Kommentar om grenen")
+                                td 
+                                    input(name="branchUnit_" + val, placeholder="Enhet, till exempel gram, poäng eller slag")
+                    button.btn-error(type="submit")
