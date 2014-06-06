@@ -1,24 +1,6 @@
 extends layout
 
 block content
-  .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
-      .container
-        .navbar-header
-          button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
-            span.sr-only Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-          a.navbar-brand(href='#') Scorekeeper
-        .collapse.navbar-collapse
-          ul.nav.navbar-nav
-            li.active
-              a(href='#') Results
-            li
-              a(href='#about') Inställning
-
-    .container
-      .starter-template
         h1= title
         p.lead Ställ in din tävling här
         p ID Should be #{comp.scorecardID}
@@ -37,21 +19,20 @@ block content
                             th Namn:
                             th Lag:
                             th Kön
-                        - var counter=0;
-                        for user in comp.users
+                        each user, counter in comp.users
                             tr
                                 td=val
                                 td
-                                    input(name="user" + counter + "name", value=user.name) 
+                                    input(name="user_" + counter + "_name", value=user.name) 
                                 td 
-                                    input(name="user" + counter + "team", value=user.team)
+                                    input(name="user_" + counter + "_team", value=user.team)
                                 td
                                     label(for="sex_" + counter) M
-                                        input(type="radio", name="user" + counter + "sex", value="M", checked=(user.sex==='M'))
+                                        input(type="radio", name="user_" + counter + "_sex", value="M", checked=(user.sex==='M'))
                                     &nbsp; &nbsp; &nbsp;
-                                    label(for="sex_" + val) F
-                                        input(type="radio", name="user" + counter + "sex", value="F", checked=(user.sex==='F'))
-                                    input(type="text", name="user" + counter + "id", value=user._id)
+                                    label(for="sex_" + counter) F
+                                        input(type="radio", name="user_" + counter + "_sex", value="F", checked=(user.sex==='F'))
+                                    input(type="text", name="user_" + counter + "_id", value=user._id)
                             - counter++
                 h4 Grenar
                     table
@@ -60,15 +41,14 @@ block content
                             th Gren:
                             th Kommentar:
                             th Poängenhet
-                        - var counter=0;
-                        for branch in comp.branches
+                        each branch, counter in comp.branches
                             tr
                                 td=val
                                 td
-                                    input(name="branch" + counter + "name", placeholder="Grenens namn", value=branch.name)
+                                    input(name="branch_" + counter + "_name", placeholder="Grenens namn", value=branch.name)
                                 td 
-                                    input(name="branch" + counter + "comment", placeholder="Kommentar om grenen", value=branch.comment)
+                                    input(name="branch_" + counter + "_comment", placeholder="Kommentar om grenen", value=branch.comment)
                                 td 
-                                    input(name="branch" + counter + "unit", placeholder="Enhet, till exempel gram, poäng eller slag", value = branch.unit)
-                            - counter++
+                                    input(name="branch_" + counter + "_unit", placeholder="Enhet, till exempel gram, poäng eller slag", value = branch.unit)
+                                    input(type="text", name="branch_" + counter + "_id", value=branch._id)
                     button.btn.btn-warning(type="submit") Spara

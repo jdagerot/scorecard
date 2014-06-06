@@ -5,7 +5,7 @@ function parseFormData(prefix, fix, formDataObject, createIdIfMissing) {
 	console.log(formDataObject);
 
 	var idx = 0;
-	returnObject = [];
+	returnObject = {};
 
 	for (var f in fix) {
 		f = fix[f];
@@ -14,21 +14,18 @@ function parseFormData(prefix, fix, formDataObject, createIdIfMissing) {
 		fieldValue = formDataObject[prefix + idx+++f];
 
 		while (fieldValue && fieldValue.length > 0) {
-			object = returnObject[idx - 1] || {};
+			object = returnObject[object._id] || {};
 			object[f] = fieldValue;
-			returnObject[idx - 1] = (object);
+			object._id = object._id || new ObjectID();
+			returnObject[object._id] = (object);
 			fieldValue = formDataObject[prefix + idx+++f];
 		}
 	}
 
-	if(createIdIfMissing) {
-		for(i in returnObject) {
-			returnObject[i]._id = returnObject[i]._id || new ObjectID()
 
-		}
-	}
 
 	return returnObject;
+	console.dir(returnObject);
 }
 
 /*
@@ -48,63 +45,54 @@ module.exports = function(app, database) {
 	}));
 
 
-				var baseCompetion = {
-				scorecardID: new ObjectID(),
-				competition: {
-					name: 'Min tävling'
-				},
-				users: [{
-					name: 'Användare_1',
-					team: 'Team_1',
-					sex: 'M'
-				}, {
-					name: 'Användare_2',
-					team: 'Team_2',
-					sex: 'M'
-				}, {
-					name: 'Användare_3',
-					team: 'Team_3',
-					sex: 'M'
-				}, {
-					name: 'Användare_4',
-					team: 'Team_4',
-					sex: 'M'
-				}, {
-					name: 'Användare_5',
-					team: 'Team_5',
-					sex: 'M'
-				}],
-				branches: [{
-					name: 'Gren nummer 1',
-					comment: 'Kommentar om grenen #1',
-					unit: 'Kilogram'
-				}, {
-					name: 'Gren nummer 2',
-					comment: 'Kommentar om grenen #2',
-					unit: 'Kilogram'
-				}, {
-					name: 'Gren nummer 3',
-					comment: 'Kommentar om grenen #3',
-					unit: 'Kilogram'
-				}, {
-					name: 'Gren nummer 4',
-					comment: 'Kommentar om grenen #4',
-					unit: 'Kilogram'
-				}, {
-					name: 'Gren nummer 5',
-					comment: 'Kommentar om grenen #5',
-					unit: 'Kilogram'
-				}]
-			}
+	function getBaseCompetition() {
+
+		var base = {
+			scorecardID: new ObjectID(),
+			competition: {
+				name: 'Min tävling'
+			},
+			users: {},
+			branches: {}
+
+		}
+
+		// add some sample data
+
+		for (var i = 0; i < 5; i++) {
+			var id = new ObjectID();
+			base.users[id] = {
+				name: 'Användare_' + i,
+				team: 'Team_1',
+				sex: 'M'
+			};
+			id = new ObjectID();
+			base.branches[id] = {
+				name: 'Gren nummer 1',
+				comment: 'Kommentar om grenen #1',
+				unit: 'Kilogram'
+			};
+		}
+		return base;
+	}
 
 
 
 	this.index = function(req, res) {
-		res.render('index', {
-			title: 'Scorekeeper'
-		});
-		console.log("In function index!");
 
+		collCompetitions.find({}).toArray(function(err, docs) {
+			if (err) {
+				console.dir(err)
+			} else {
+				console.dir(docs);
+				res.render('index', {
+					title: 'Scorekeeper',
+					competitions: docs
+				});
+			}
+
+
+		})
 	};
 
 	this.setup = function(req, res) {
@@ -113,24 +101,27 @@ module.exports = function(app, database) {
 		if (typeof scorecardID != "undefined") {
 			console.log("Loading from server");
 
-			collCompetitions.findOne({_id : scorecardID}, function(err,docs) {
-				if(err) {console.dir(err)} else {
-				
+			collCompetitions.findOne({
+				_id: scorecardID
+			}, function(err, docs) {
+				if (err) {
+					console.dir(err)
+				} else {
+
 					console.dir(docs);
 					docs.scorecardID = docs._id;
-				res.render('setup', {
-					title: 'Scorekeeper Configuration test',
-					comp: docs
-				});
+					res.render('setup', {
+						title: 'Scorekeeper Configuration test',
+						comp: docs
+					});
 
 				}
 			})
 
 		} else {
 
-			var comp = baseCompetion;
+			var comp = getBaseCompetition();
 			comp.scorecardID = new ObjectID()
-
 
 			res.render('setup', {
 				title: 'Scorekeeper Configuration',
@@ -151,16 +142,25 @@ module.exports = function(app, database) {
 				name: req.body.competionName
 			},
 			users: parseFormData("user", ["name", "team", "sex", "_id"], req.body, true),
-			branches: parseFormData("branch", ["name", "comment", "unit"], req.body),
+			branches: parseFormData("branch", ["name", "comment", "unit", "_id"], req.body),
 		};
+
+		for (b in object.branches) {
+			object.branches[b]._id = object.branches[b]._id || new ObjectID();
+		}
 
 		for (user in object.users) {
 			console.log("User: " + user);
 			user = object.users[user];
 			console.log("User object:");
 			console.dir(user);
+			user._id = user._id || new ObjectID();
+			user.branches = object.branches;
+			for (i in user.branches) {
+				user.branches[i].score = 0;
+			}
 			collUsers.update({
-				_id: user.id || new ObjectID()
+				_id: user._id
 			}, user, {
 				upsert: true
 			}, function(err, docs)  {
@@ -169,7 +169,7 @@ module.exports = function(app, database) {
 			});
 		}
 
-		object._id = object._id  || new ObjectID();
+		object._id = object._id || new ObjectID();
 		collCompetitions.update({
 			_id: object._id
 		}, object, {
@@ -179,5 +179,71 @@ module.exports = function(app, database) {
 			res.redirect("/setup/" + object._id);
 		});
 
+	}
+
+	this.showScorecard = function(req, res)  {
+		var scorecardID = req.params.scorecardID;
+
+
+
+		collCompetitions.aggregate([
+
+			{
+				$match: {
+					_id: scorecardID
+				}
+			}, {
+				$unwind: "$users"
+			}, {
+				$group: {
+					_id: "$users.team",
+					members: {
+						$push: "$users"
+					},
+					competitionName: {
+						$first: "$competition.name"
+					},
+					scorecardID: {
+						$first: "$_id"
+					}
+
+				}
+			}, {
+				$sort: {
+					_id: 1,
+					members: 1
+				}
+			}
+		], function(err, docs) {
+			console.dir("scorecardID: " + scorecardID);
+			console.dir(docs);
+			if (err) {
+				console.log(err)
+			} else {
+				docs.scorecardID = docs._id;
+
+				res.render("scores", {
+					comp: docs
+				});
+			}
+		});
+
+
+	}
+
+	this.addScorecard = function(req, res)  {
+		var scorecardID = req.params.scorecardID;
+
+		// Loop thrrough all fields in the req.body object
+		for (idx in req.body) {
+			value = req.body[idx];
+			console.log(idx + "=" + value);
+			parts = idx.split["_"]; // Now idx 1 should be member._id and idx 2 should be branch._id
+
+
+			//			collCompetitions.update({},)
+		}
+
+		res.redirect("/scores/" + scorecardID);
 	}
 }

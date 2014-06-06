@@ -44,7 +44,7 @@ MongoClient.connect("mongodb://" + connection_string, function(err, db) {
 		app.use(express.methodOverride());
 		app.use(app.router);
 		app.use(express.static(path.join(__dirname, 'public')));
-
+		app.locals.pretty = true;
 		// development only
 		if ('development' == app.get('env')) {
 			app.use(express.errorHandler());
@@ -54,6 +54,9 @@ MongoClient.connect("mongodb://" + connection_string, function(err, db) {
 		app.post('/setup', routes.saveSetup)
 		app.get('/setup/:scorecardID', routes.setup)
 		app.get('/setup', routes.setup)
+		app.post('/scores/:scorecardID', routes.addScorecard)
+		app.get('/scores/:scorecardID', routes.showScorecard)
+		//app.get('/scores', routes.showScorecard)
 
 		http.createServer(app).listen(app.get('port'), function() {
 			console.log('Express server listening on port ' + app.get('port'));

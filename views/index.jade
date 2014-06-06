@@ -1,5 +1,12 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+	h1= title
+	p Welcome to #{title}
+	ul
+		for comp in competitions
+			li
+				p
+					a(href="/setup/" + comp._id) #{comp.competition.name}
+								p
+					a(href="/scores/" + comp._id) Scores
