@@ -5,3 +5,4 @@ The idea behind this application is to provide an easy-to-setup and easy-to-fill
 - Form to setup a scorecard
 - Form to add attendees
 - Form to display results
+- A winner form

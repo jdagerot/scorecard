@@ -51,7 +51,7 @@ MongoClient.connect("mongodb://" + connection_string, function(err, db) {
 		}
 
 		app.get('/', routes.index);
-		app.post('/setup/:scorecardID', routes.saveSetup)
+		app.post('/setup', routes.saveSetup)
 		app.get('/setup/:scorecardID', routes.setup)
 		app.get('/setup', routes.setup)
 

@@ -29,7 +29,7 @@ block content
                     input(type="hidden", name="scorecardID", value=comp.scorecardID)
                 div
                     label(for="competionName") Tävlingsnamn
-                    input(name="competionName", value=comp.competition.name)
+                    input(name="competionName")
                 h4 Deltagare
                     table
                         tr
@@ -44,14 +44,14 @@ block content
                                 td
                                     input(name="user" + counter + "name", value=user.name) 
                                 td 
-                                    input(name="user" + counter + "team", value=user.team)
+                                    input(name="user" + counter + "team", value=user.team) 
                                 td
                                     label(for="sex_" + counter) M
-                                        input(type="radio", name="user" + counter + "sex", value="M", checked=(user.sex==='M'))
+                                        input(type="radio", name="user" + counter + "sex", value="M", checked="checked")
                                     &nbsp; &nbsp; &nbsp;
                                     label(for="sex_" + val) F
-                                        input(type="radio", name="user" + counter + "sex", value="F", checked=(user.sex==='F'))
-                                    input(type="text", name="user" + counter + "id", value=user._id)
+                                        input(type="radio", name="user" + counter + "sex", value="F")
+                                    input(type="hidden", name="user" + counter + "id", value=user.id) 
                             - counter++
                 h4 Grenar
                     table
@@ -71,4 +71,4 @@ block content
                                 td 
                                     input(name="branch" + counter + "unit", placeholder="Enhet, till exempel gram, poäng eller slag", value = branch.unit)
                             - counter++
-                    button.btn.btn-warning(type="submit") Spara
+                    button.btn-error(type="submit")
