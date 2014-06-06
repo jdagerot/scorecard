@@ -10,8 +10,8 @@ block content
                 div
                     input(type="hidden", name="scorecardID", value=comp.scorecardID)
                 div
-                    label(for="competionName") Tävlingsnamn
-                    input(name="competionName", value=comp.competition.name)
+                    label(for="competitionName") Tävlingsnamn
+                    input(name="competitionName", value=comp.competitionName)
                 h4 Deltagare
                     table
                         tr
@@ -23,16 +23,16 @@ block content
                             tr
                                 td=val
                                 td
-                                    input(name="user_" + counter + "_name", value=user.name) 
+                                    input(name="users_" + counter + "_name", value=user.name) 
                                 td 
-                                    input(name="user_" + counter + "_team", value=user.team)
+                                    input(name="users_" + counter + "_team", value=user.team)
                                 td
                                     label(for="sex_" + counter) M
-                                        input(type="radio", name="user_" + counter + "_sex", value="M", checked=(user.sex==='M'))
+                                        input(type="radio", name="users_" + counter + "_sex", value="M", checked=(user.sex==='M'))
                                     &nbsp; &nbsp; &nbsp;
                                     label(for="sex_" + counter) F
-                                        input(type="radio", name="user_" + counter + "_sex", value="F", checked=(user.sex==='F'))
-                                    input(type="text", name="user_" + counter + "_id", value=user._id)
+                                        input(type="radio", name="users_" + counter + "_sex", value="F", checked=(user.sex==='F'))
+                                    input(type="text", name="users_" + counter + "_id", value=user._id)
                             - counter++
                 h4 Grenar
                     table
@@ -45,10 +45,10 @@ block content
                             tr
                                 td=val
                                 td
-                                    input(name="branch_" + counter + "_name", placeholder="Grenens namn", value=branch.name)
+                                    input(name="branches_" + counter + "_name", placeholder="Grenens namn", value=branch.name)
                                 td 
-                                    input(name="branch_" + counter + "_comment", placeholder="Kommentar om grenen", value=branch.comment)
+                                    input(name="branches_" + counter + "_comment", placeholder="Kommentar om grenen", value=branch.comment)
                                 td 
-                                    input(name="branch_" + counter + "_unit", placeholder="Enhet, till exempel gram, poäng eller slag", value = branch.unit)
-                                    input(type="text", name="branch_" + counter + "_id", value=branch._id)
+                                    input(name="branches_" + counter + "_unit", placeholder="Enhet, till exempel gram, poäng eller slag", value = branch.unit)
+                                    input(type="text", name="branches_" + counter + "_id", value=branch._id)
                     button.btn.btn-warning(type="submit") Spara

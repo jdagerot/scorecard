@@ -1,31 +1,27 @@
 ObjectID = null;
 
 
-function parseFormData(prefix, fix, formDataObject, createIdIfMissing) {
-	console.log(formDataObject);
+function parseFormData(formDataObject) {
+	var returnObject = {};
 
-	var idx = 0;
-	returnObject = {};
+	for (idx in formDataObject) {
+		var parts = idx.split("_");
 
-	for (var f in fix) {
-		f = fix[f];
-		var idx = 0;
-		var object = {};
-		fieldValue = formDataObject[prefix + idx+++f];
+		if (parts.length === 3) {
 
-		while (fieldValue && fieldValue.length > 0) {
-			object = returnObject[object._id] || {};
-			object[f] = fieldValue;
-			object._id = object._id || new ObjectID();
-			returnObject[object._id] = (object);
-			fieldValue = formDataObject[prefix + idx+++f];
+			var arrayName = parts[0];
+			var key = parts[1];
+			var field = parts[2];
+			var currentArr = returnObject[arrayName] || {};
+			var currentArrKey = currentArr[key] || {};
+			currentArrKey[field] = formDataObject[idx];
+			currentArr[key] = currentArrKey;
+			returnObject[arrayName] = currentArr;
 		}
 	}
 
-
-
 	return returnObject;
-	console.dir(returnObject);
+
 }
 
 /*
@@ -35,6 +31,7 @@ var database, collCompetitions;
 module.exports = function(app, database) {
 	var app = app;
 	ObjectID = require('mongodb').ObjectID;
+	var extend = require('node.extend');
 	var database = database;
 	console.log(database.name);
 	var collCompetitions = database.collection("Competitions");
@@ -63,13 +60,13 @@ module.exports = function(app, database) {
 			var id = new ObjectID();
 			base.users[id] = {
 				name: 'Användare_' + i,
-				team: 'Team_1',
+				team: 'Team_' + i,
 				sex: 'M'
 			};
 			id = new ObjectID();
 			base.branches[id] = {
-				name: 'Gren nummer 1',
-				comment: 'Kommentar om grenen #1',
+				name: 'Gren nummer ' + i,
+				comment: 'Kommentar om grenen #' + i,
 				unit: 'Kilogram'
 			};
 		}
@@ -97,7 +94,7 @@ module.exports = function(app, database) {
 
 	this.setup = function(req, res) {
 		var scorecardID = req.params.scorecardID;
-
+		console.log("scorecardID" + scorecardID);
 		if (typeof scorecardID != "undefined") {
 			console.log("Loading from server");
 
@@ -136,38 +133,19 @@ module.exports = function(app, database) {
 		console.dir(req.body.scorecardID);
 
 		// Build up a json object of the form data
-		var object = {
-			_id: req.body.scorecardID,
-			competition: {
-				name: req.body.competionName
-			},
-			users: parseFormData("user", ["name", "team", "sex", "_id"], req.body, true),
-			branches: parseFormData("branch", ["name", "comment", "unit", "_id"], req.body),
-		};
+		var object = parseFormData(req.body);
 
-		for (b in object.branches) {
-			object.branches[b]._id = object.branches[b]._id || new ObjectID();
-		}
+		object._id = req.body.scorecardID;
+		object.competitionName = req.body.competitionName
 
-		for (user in object.users) {
-			console.log("User: " + user);
-			user = object.users[user];
-			console.log("User object:");
-			console.dir(user);
-			user._id = user._id || new ObjectID();
-			user.branches = object.branches;
-			for (i in user.branches) {
-				user.branches[i].score = 0;
-			}
-			collUsers.update({
-				_id: user._id
-			}, user, {
-				upsert: true
-			}, function(err, docs)  {
-				if (err) console.dir(err);
-				console.log("Saved/updated" + docs);
-			});
-		}
+		// collUsers.update({
+		// 	_id: user._id
+		// }, user, {
+		// 	upsert: true
+		// }, function(err, docs)  {
+		// 	if (err) console.dir(err);
+		// 	console.log("Saved/updated" + docs);
+		// });
 
 		object._id = object._id || new ObjectID();
 		collCompetitions.update({
