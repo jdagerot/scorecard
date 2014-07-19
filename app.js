@@ -56,6 +56,7 @@ MongoClient.connect("mongodb://" + connection_string, function(err, db) {
 		app.get('/setup', routes.setup)
 		app.post('/scores/:scorecardID', routes.addScorecard)
 		app.get('/scores/:scorecardID', routes.showScorecard)
+		app.get('/addscore', routes.showScorecard)
 		//app.get('/scores', routes.showScorecard)
 
 		http.createServer(app).listen(app.get('port'), function() {

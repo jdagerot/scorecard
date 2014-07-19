@@ -94,7 +94,7 @@ module.exports = function(app, database) {
 
 	this.setup = function(req, res) {
 		var scorecardID = req.params.scorecardID;
-		console.log("scorecardID" + scorecardID);
+		console.log("scorecardID: " + scorecardID);
 		if (typeof scorecardID != "undefined") {
 			console.log("Loading from server");
 
@@ -104,7 +104,7 @@ module.exports = function(app, database) {
 				if (err) {
 					console.dir(err)
 				} else {
-
+					console.info("this.setup");
 					console.dir(docs);
 					docs.scorecardID = docs._id;
 					res.render('setup', {
@@ -148,7 +148,30 @@ module.exports = function(app, database) {
 		// });
 
 		object._id = object._id || new ObjectID();
-		collCompetitions.update({
+
+		// Wrap out the users
+		userArray = [];
+		for(var idx in object.users) {
+			userObj = object.users[idx];
+			userObj.id = idx;
+			userArray.push(userObj);
+		}
+
+		// Wrap out the branches
+		branchArray = [];
+		for(var idx in object.branches) {
+			branchObj = object.branches[idx];
+			branchObj.id = idx;
+			branchArray.push(branchObj);
+		}
+
+		object.users =userArray;
+		object.branches = branchArray;
+
+
+		console.info("This object will be saved to db:");
+		console.dir(object);
+				collCompetitions.update({
 			_id: object._id
 		}, object, {
 			upsert: true
@@ -163,16 +186,15 @@ module.exports = function(app, database) {
 		var scorecardID = req.params.scorecardID;
 
 
-
+		console.log("Finding id:" + scorecardID);
 		collCompetitions.aggregate([
 
 			{
 				$match: {
 					_id: scorecardID
 				}
-			}, {
-				$unwind: "$users"
-			}, {
+			}, {$unwind : "$users"},
+			{
 				$group: {
 					_id: "$users.team",
 					members: {
@@ -211,8 +233,9 @@ module.exports = function(app, database) {
 
 	this.addScorecard = function(req, res)  {
 		var scorecardID = req.params.scorecardID;
-
+		console.log("Adding scorecards");
 		// Loop thrrough all fields in the req.body object
+		console.dir(req.body);
 		for (idx in req.body) {
 			value = req.body[idx];
 			console.log(idx + "=" + value);

@@ -13,6 +13,7 @@
     "redis": "*",
     "superagent": "~0.18.0",
     "twitter-bootstrap-3.0.0": "~3.0.0",
-    "node.extend": "~1.0.10"
+    "node.extend": "~1.0.10",
+    "body-parser": "~1.4.3"
   }
 }

@@ -16,9 +16,4 @@ block content
                     for member in team.members
                         li
                             =member.name
-                            ul
-                                for branch in member.branches
-                                    li
-                                        =branch.name + ": "
-                                        input(type="text", value=branch.score, name="userScore_" + member._id + "_" + branch._id)
                 button.btn.btn-warning(type="submit") Spara
